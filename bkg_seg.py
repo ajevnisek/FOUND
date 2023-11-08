@@ -32,6 +32,7 @@ def compute_img_bkg_seg(
     """
     
     w_featmap, h_featmap = featmap_dims
+    import ipdb; ipdb.set_trace()
 
     nb, nh, _ = attentions.shape[:3]
     # we keep only the output patch attention
