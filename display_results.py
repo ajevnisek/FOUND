@@ -13,18 +13,22 @@ def parse_args():
     parser.add_argument("--augmented_path", help="Path to the FOUND result image.")
     parser.add_argument("--annfile_path", help="Path to ground truth annotations file.")
     parser.add_argument("--result_path", help="Path to result image.")
+    parser.add_argument("--is_dota", action="store_true", default=False,)
 
     args = parser.parse_args()
     return args
 
 
-def load_annotations(annfile_path):
+def load_annotations(annfile_path, is_dota=False):
     with open(annfile_path, 'r') as f:
         rawdata = f.read()
 
     coords_list = []
     for line in rawdata.splitlines():
-        coords = np.array([float(x) for x in line.split(' ')[:-1]])
+        if is_dota:
+            coords = np.array([float(x) for x in line.split(' ')[:-2]])
+        else:
+            coords = np.array([float(x) for x in line.split(' ')[:-1]])
         coords = np.array([[x, y] for x, y in zip(coords[::2], coords[1::2])])
         coords_list.append(coords)
     return coords_list
@@ -34,7 +38,7 @@ def main():
     args = parse_args()
     original = plt.imread(args.original_path)
     augmented = plt.imread(args.augmented_path)
-    coords_list = load_annotations(args.annfile_path)
+    coords_list = load_annotations(args.annfile_path, args.is_dota)
     len(coords_list)
     plt.subplot(2, 2, 1)
     plt.imshow(original)
